@@ -4,5 +4,3 @@ spring:
         url: jdbc:mysql://127.0.0.1:3306/vollmed_api
         username: vinsmaketest
         password: vinsmaketest21
-    flyway:
-        repair: true
