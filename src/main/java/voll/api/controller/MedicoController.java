@@ -1,9 +1,7 @@
 package voll.api.controller;
 
 import java.net.URI;
-import java.util.List;
 
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,13 +19,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import voll.api.medico.DatosListadoMedico;
-import voll.api.medico.DatosRegistroMedico;
-import voll.api.medico.DatosRespuestaMedico;
-import voll.api.medico.MedicoRepository;
-import voll.api.medico.Medico;
-import voll.api.direccion.*;
-import voll.api.medico.DatosActualizarMedico;
+import voll.api.domain.medico.*;
+import voll.api.domain.direccion.*;
 
 @RestController
 @RequestMapping("/medicos")
@@ -62,11 +55,11 @@ public class MedicoController {
     //As we use Page, we dont get a list, we get a page. 
     //pagedefaul decides which are the default parameters.
     @GetMapping
-    public Page<DatosListadoMedico> getMedicos(@PageableDefault(size = 2) Pageable paginacion){
+    public ResponseEntity<Page<DatosListadoMedico>> getMedicos(@PageableDefault(size = 2) Pageable paginacion){
         //return medicoRepository.findAll(paginacion).map(DatosListadoMedico::new);
 
         //findByActivoTrue it's a spring boot nomenglature
-        return medicoRepository.findByActivoTrue(paginacion).map(DatosListadoMedico::new);
+        return ResponseEntity.ok(medicoRepository.findByActivoTrue(paginacion).map(DatosListadoMedico::new));
     }
 
 
@@ -87,6 +80,7 @@ public class MedicoController {
         ));
     }
 
+
     //this is what we do with the DEL request
     //logic delete, we desactive a medic.
     @DeleteMapping("/{id}")
@@ -97,5 +91,19 @@ public class MedicoController {
     //    medicoRepository.delete(medico);
         medico.desactivarMedico();
         return ResponseEntity.noContent().build();
+    }
+
+
+    //here we can request a get of an especific object (example: GET http://localhost:8080/medicos/2)
+    @GetMapping("/{id}")
+    public ResponseEntity<DatosRespuestaMedico> retornaDatosMedico(@PathVariable Long id){
+        Medico medico = medicoRepository.getReferenceById(id);
+        //to not return the direct object of my entity
+        var datosMedico = (new DatosRespuestaMedico(
+            medico.getId(), medico.getNombre(), medico.getEmail(), medico.getTelefono(), medico.getDocumento(), medico.getEspecialidad(), 
+            new Direccion (
+                medico.getDireccion().getCalle(), medico.getDireccion().getDistrito(), medico.getDireccion().getCiudad(), medico.getDireccion().getNumero(), medico.getDireccion().getComplemento())
+        ));
+        return ResponseEntity.ok(datosMedico);
     }
 }
