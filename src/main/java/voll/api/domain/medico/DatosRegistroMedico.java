@@ -1,10 +1,10 @@
-package voll.api.medico;
+package voll.api.domain.medico;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Email;
-import voll.api.direccion.*;
+import voll.api.domain.direccion.*;
 
 
 public record DatosRegistroMedico(
