@@ -1,4 +1,4 @@
-package voll.api.domain.infra;
+package voll.api.domain.infra.errores;
 
 import org.apache.catalina.connector.Response;
 import org.hibernate.proxy.EntityNotFoundDelegate;
