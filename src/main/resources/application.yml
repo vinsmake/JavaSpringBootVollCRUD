@@ -12,3 +12,6 @@ spring:
 server:
     error:
         include-stacktrace: never
+api:
+    security:
+            secret: 4815162342
